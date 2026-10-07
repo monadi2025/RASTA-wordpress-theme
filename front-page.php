@@ -24,6 +24,8 @@ $slider  = $options['home_slider'] ?? array();
 					<div class="resta-slider__item">
 						<?php if ( ! empty( $slide['image'] ) ) : ?>
 							<img src="<?php echo esc_url( $slide['image'] ); ?>" alt="<?php echo esc_attr( $slide['title'] ?? '' ); ?>" class="resta-slider__image">
+						<?php else : ?>
+							<div class="resta-slider__no-image"><?php echo esc_html__( 'No Image', 'resta' ); ?></div>
 						<?php endif; ?>
 						<div class="resta-slider__content">
 							<?php if ( ! empty( $slide['title'] ) ) : ?>

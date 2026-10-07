@@ -30,7 +30,7 @@ CSF::createSection(
 	$prefix,
 	array(
 		'id'     => 'general',
-		'title'  => __( 'General', 'resta' ),
+		'title'  => __( 'General Settings', 'resta' ),
 		'fields' => array(
 			array(
 				'id'    => 'logo_url',
@@ -58,13 +58,13 @@ CSF::createSection(
 			array(
 				'id'      => 'header_phone',
 				'type'    => 'text',
-				'title'   => __( 'Header Phone', 'resta' ),
+				'title'   => __( 'Phone Number', 'resta' ),
 				'default' => '+989121234567',
 			),
 			array(
 				'id'      => 'header_email',
 				'type'    => 'text',
-				'title'   => __( 'Header Email', 'resta' ),
+				'title'   => __( 'Email Address', 'resta' ),
 				'default' => 'info@example.com',
 			),
 		),
@@ -74,8 +74,8 @@ CSF::createSection(
 CSF::createSection(
 	$prefix,
 	array(
-		'id'     => 'home',
-		'title'  => __( 'Home', 'resta' ),
+		'id'     => 'homepage',
+		'title'  => __( 'Homepage', 'resta' ),
 		'fields' => array(
 			array(
 				'id'     => 'home_slider',
@@ -85,29 +85,31 @@ CSF::createSection(
 					array(
 						'id'    => 'title',
 						'type'  => 'text',
-						'title' => __( 'Title', 'resta' ),
+						'title' => __( 'Slide Title', 'resta' ),
 					),
 					array(
 						'id'    => 'image',
 						'type'  => 'upload',
-						'title' => __( 'Image', 'resta' ),
+						'title' => __( 'Slide Image', 'resta' ),
 					),
 					array(
 						'id'    => 'link',
 						'type'  => 'text',
-						'title' => __( 'Link', 'resta' ),
+						'title' => __( 'Slide Link', 'resta' ),
 					),
 				),
 			),
 			array(
-				'id'    => 'newsletter_title',
-				'type'  => 'text',
-				'title' => __( 'Newsletter Title', 'resta' ),
+				'id'      => 'newsletter_title',
+				'type'    => 'text',
+				'title'   => __( 'Newsletter Title', 'resta' ),
+				'default' => 'خبرنامه رستا',
 			),
 			array(
-				'id'    => 'newsletter_text',
-				'type'  => 'textarea',
-				'title' => __( 'Newsletter Text', 'resta' ),
+				'id'      => 'newsletter_text',
+				'type'    => 'textarea',
+				'title'   => __( 'Newsletter Description', 'resta' ),
+				'default' => 'برای دریافت پیشنهادهای ویژه، ثبت‌نام کنید.',
 			),
 		),
 	)
@@ -117,17 +119,17 @@ CSF::createSection(
 	$prefix,
 	array(
 		'id'     => 'shop',
-		'title'  => __( 'Shop', 'resta' ),
+		'title'  => __( 'Shop Settings', 'resta' ),
 		'fields' => array(
 			array(
 				'id'      => 'woocommerce_columns',
 				'type'    => 'select',
 				'title'   => __( 'Products Per Row', 'resta' ),
 				'options' => array(
-					'2' => '2',
-					'3' => '3',
-					'4' => '4',
-					'5' => '5',
+					'2' => '2 Columns',
+					'3' => '3 Columns',
+					'4' => '4 Columns',
+					'5' => '5 Columns',
 				),
 				'default' => '4',
 			),

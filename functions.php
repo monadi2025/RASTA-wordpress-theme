@@ -11,6 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'RESTA_THEME_VERSION', wp_get_theme()->get( 'Version' ) );
+define( 'RESTA_DIR', get_template_directory() );
+define( 'RESTA_URI', get_template_directory_uri() );
+
+// Load Codestar Framework
+require_once RESTA_DIR . '/vendor/codestar/framework.php';
 
 if ( ! function_exists( 'resta_get_default_options' ) ) {
 	function resta_get_default_options() {
@@ -94,14 +99,14 @@ if ( ! function_exists( 'resta_enqueue_assets' ) ) {
 
 		wp_enqueue_style(
 			'resta-main',
-			get_template_directory_uri() . '/assets/css/main.css',
+			RESTa_URI . '/assets/css/main.css',
 			array(),
 			$theme_version
 		);
 
 		wp_enqueue_script(
 			'resta-main',
-			get_template_directory_uri() . '/assets/js/main.js',
+			RESTa_URI . '/assets/js/main.js',
 			array( 'jquery' ),
 			$theme_version,
 			true
@@ -110,7 +115,7 @@ if ( ! function_exists( 'resta_enqueue_assets' ) ) {
 		if ( class_exists( 'WooCommerce' ) ) {
 			wp_enqueue_style(
 				'resta-woocommerce',
-				get_template_directory_uri() . '/assets/css/woocommerce.css',
+				RESTa_URI . '/assets/css/woocommerce.css',
 				array(),
 				$theme_version
 			);
@@ -119,10 +124,50 @@ if ( ! function_exists( 'resta_enqueue_assets' ) ) {
 }
 add_action( 'wp_enqueue_scripts', 'resta_enqueue_assets' );
 
+if ( ! function_exists( 'resta_enqueue_home_assets' ) ) {
+	function resta_enqueue_home_assets() {
+		if ( is_front_page() ) {
+			$theme_version = wp_get_theme()->get( 'Version' );
+
+			wp_enqueue_style(
+				'resta-home',
+				RESTa_URI . '/assets/css/home.css',
+				array(),
+				$theme_version
+			);
+
+			wp_enqueue_script(
+				'resta-home',
+				RESTa_URI . '/assets/js/home.js',
+				array( 'jquery' ),
+				$theme_version,
+				true
+			);
+		}
+	}
+}
+add_action( 'wp_enqueue_scripts', 'resta_enqueue_home_assets' );
+
+if ( ! function_exists( 'resta_enqueue_product_assets' ) ) {
+	function resta_enqueue_product_assets() {
+		if ( is_singular( 'product' ) && class_exists( 'WooCommerce' ) ) {
+			$theme_version = wp_get_theme()->get( 'Version' );
+
+			wp_enqueue_style(
+				'resta-product',
+				RESTa_URI . '/assets/css/product.css',
+				array(),
+				$theme_version
+			);
+		}
+	}
+}
+add_action( 'wp_enqueue_scripts', 'resta_enqueue_product_assets' );
+
 if ( ! function_exists( 'resta_require_theme_options' ) ) {
 	function resta_require_theme_options() {
 		if ( class_exists( 'CSF' ) ) {
-			require_once get_template_directory() . '/inc/theme-options.php';
+			require_once RESTA_DIR . '/inc/theme-options.php';
 		}
 	}
 }
@@ -233,3 +278,8 @@ if ( ! function_exists( 'resta_register_debug_menu' ) ) {
 	}
 }
 add_action( 'admin_menu', 'resta_register_debug_menu' );
+
+// Include product card component
+if ( ! function_exists( 'resta_product_card' ) ) {
+	require_once RESTA_DIR . '/inc/product-card.php';
+}
