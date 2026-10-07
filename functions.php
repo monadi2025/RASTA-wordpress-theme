@@ -1,6 +1,6 @@
 <?php
 /**
- * Theme functions for Resta.
+ * Theme functions for Resta - Complete Version
  *
  * @package Resta
  * @since 1.0.0
@@ -10,13 +10,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'RESTA_THEME_VERSION', wp_get_theme()->get( 'Version' ) );
+define( 'RESTA_THEME_VERSION', '1.0.0' );
 define( 'RESTA_DIR', get_template_directory() );
 define( 'RESTA_URI', get_template_directory_uri() );
 
-// Load Codestar Framework
-require_once RESTA_DIR . '/vendor/codestar/framework.php';
+// Load Codestar Framework embedded
+if ( ! class_exists( 'CSF' ) ) {
+	require_once RESTA_DIR . '/vendor/codestar/framework.php';
+}
 
+// ===== Default Options =====
 if ( ! function_exists( 'resta_get_default_options' ) ) {
 	function resta_get_default_options() {
 		return array(
@@ -31,33 +34,33 @@ if ( ! function_exists( 'resta_get_default_options' ) ) {
 			'header_phone'              => '+989121234567',
 			'header_email'              => 'info@example.com',
 			'home_slider'               => array(),
-			'promo_banners'             => array(),
 			'newsletter_title'          => 'خبرنامه رستا',
 			'newsletter_text'           => 'برای دریافت پیشنهادهای ویژه، ثبت‌نام کنید.',
-			'woocommerce_columns'       => 4,
-			'catalog_products_per_page' => 12,
+			'woocommerce_columns'       => '4',
+			'catalog_products_per_page' => '12',
 			'debug_enabled'             => 1,
 		);
 	}
 }
 
+// ===== Get Theme Options =====
 if ( ! function_exists( 'resta_get_options' ) ) {
 	function resta_get_options() {
 		$defaults = resta_get_default_options();
-		$options  = get_option( 'resta_options', $defaults );
+		$options  = get_option( 'resta_options', array() );
 
 		if ( ! is_array( $options ) ) {
 			$options = array();
 		}
 
-		return array_merge( $defaults, $options );
+		return wp_parse_args( $options, $defaults );
 	}
 }
 
-if ( ! function_exists( 'resta_theme_setup' ) ) {
-	function resta_theme_setup() {
-		load_theme_textdomain( 'resta', get_template_directory() . '/languages' );
-
+// ===== Theme Setup =====
+if ( ! function_exists( 'resta_setup' ) ) {
+	function resta_setup() {
+		load_theme_textdomain( 'resta', RESTA_DIR . '/languages' );
 		add_theme_support( 'title-tag' );
 		add_theme_support( 'post-thumbnails' );
 		add_theme_support(
@@ -68,15 +71,13 @@ if ( ! function_exists( 'resta_theme_setup' ) ) {
 				'comment-list',
 				'gallery',
 				'caption',
-				'style',
-				'script',
 			)
 		);
 
 		register_nav_menus(
 			array(
-				'primary' => __( 'Primary Menu', 'resta' ),
-				'footer'  => __( 'Footer Menu', 'resta' ),
+				'primary' => esc_html__( 'Primary Menu', 'resta' ),
+				'footer'  => esc_html__( 'Footer Menu', 'resta' ),
 			)
 		);
 
@@ -84,95 +85,108 @@ if ( ! function_exists( 'resta_theme_setup' ) ) {
 		add_image_size( 'resta-hero', 1600, 700, true );
 	}
 }
-add_action( 'after_setup_theme', 'resta_theme_setup' );
+add_action( 'after_setup_theme', 'resta_setup' );
 
-if ( ! function_exists( 'resta_enqueue_assets' ) ) {
-	function resta_enqueue_assets() {
-		$theme_version = wp_get_theme()->get( 'Version' );
+// ===== Register Theme Options Panel =====
+if ( ! function_exists( 'resta_register_options' ) ) {
+	function resta_register_options() {
+		if ( class_exists( 'CSF' ) ) {
+			require_once RESTA_DIR . '/inc/theme-options.php';
+		}
+	}
+}
+add_action( 'after_setup_theme', 'resta_register_options', 20 );
 
+// ===== Enqueue Main Assets =====
+if ( ! function_exists( 'resta_enqueue_main' ) ) {
+	function resta_enqueue_main() {
+		$version = RESTA_THEME_VERSION;
+
+		// Main CSS
 		wp_enqueue_style(
 			'resta-style',
 			get_stylesheet_uri(),
 			array(),
-			$theme_version
+			$version
 		);
 
 		wp_enqueue_style(
 			'resta-main',
 			RESTa_URI . '/assets/css/main.css',
 			array(),
-			$theme_version
+			$version
 		);
 
+		// Main JS
 		wp_enqueue_script(
 			'resta-main',
 			RESTa_URI . '/assets/js/main.js',
 			array( 'jquery' ),
-			$theme_version,
+			$version,
 			true
 		);
 
+		// WooCommerce support
 		if ( class_exists( 'WooCommerce' ) ) {
 			wp_enqueue_style(
 				'resta-woocommerce',
 				RESTa_URI . '/assets/css/woocommerce.css',
 				array(),
-				$theme_version
+				$version
 			);
 		}
 	}
 }
-add_action( 'wp_enqueue_scripts', 'resta_enqueue_assets' );
+add_action( 'wp_enqueue_scripts', 'resta_enqueue_main' );
 
-if ( ! function_exists( 'resta_enqueue_home_assets' ) ) {
-	function resta_enqueue_home_assets() {
+// ===== Enqueue Homepage Assets =====
+if ( ! function_exists( 'resta_enqueue_homepage' ) ) {
+	function resta_enqueue_homepage() {
 		if ( is_front_page() ) {
-			$theme_version = wp_get_theme()->get( 'Version' );
+			$version = RESTA_THEME_VERSION;
 
 			wp_enqueue_style(
 				'resta-home',
 				RESTa_URI . '/assets/css/home.css',
-				array(),
-				$theme_version
+				array( 'resta-main' ),
+				$version
 			);
 
 			wp_enqueue_script(
 				'resta-home',
 				RESTa_URI . '/assets/js/home.js',
 				array( 'jquery' ),
-				$theme_version,
+				$version,
 				true
 			);
 		}
 	}
 }
-add_action( 'wp_enqueue_scripts', 'resta_enqueue_home_assets' );
+add_action( 'wp_enqueue_scripts', 'resta_enqueue_homepage' );
 
-if ( ! function_exists( 'resta_enqueue_product_assets' ) ) {
-	function resta_enqueue_product_assets() {
-		if ( is_singular( 'product' ) && class_exists( 'WooCommerce' ) ) {
-			$theme_version = wp_get_theme()->get( 'Version' );
+// ===== Enqueue Product Page Assets =====
+if ( ! function_exists( 'resta_enqueue_product' ) ) {
+	function resta_enqueue_product() {
+		if ( is_singular( 'product' ) ) {
+			$version = RESTA_THEME_VERSION;
 
 			wp_enqueue_style(
 				'resta-product',
 				RESTa_URI . '/assets/css/product.css',
-				array(),
-				$theme_version
+				array( 'resta-main' ),
+				$version
 			);
 		}
 	}
 }
-add_action( 'wp_enqueue_scripts', 'resta_enqueue_product_assets' );
+add_action( 'wp_enqueue_scripts', 'resta_enqueue_product' );
 
-if ( ! function_exists( 'resta_require_theme_options' ) ) {
-	function resta_require_theme_options() {
-		if ( class_exists( 'CSF' ) ) {
-			require_once RESTA_DIR . '/inc/theme-options.php';
-		}
-	}
+// ===== Include Product Card Component =====
+if ( ! function_exists( 'resta_product_card' ) ) {
+	require_once RESTA_DIR . '/inc/product-card.php';
 }
-add_action( 'after_setup_theme', 'resta_require_theme_options' );
 
+// ===== Debug Functions =====
 if ( ! function_exists( 'resta_debug_log' ) ) {
 	function resta_debug_log( $message = '' ) {
 		if ( empty( $message ) ) {
@@ -243,7 +257,7 @@ if ( ! function_exists( 'resta_admin_debug_page' ) ) {
 		$log_contents = resta_get_debug_log();
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'Resta Debug', 'resta' ); ?></h1>
+			<h1><?php echo esc_html__( 'Resta Debug Panel', 'resta' ); ?></h1>
 
 			<?php if ( isset( $_GET['cleared'] ) ) : ?>
 				<div class="notice notice-success is-dismissible">
@@ -258,7 +272,7 @@ if ( ! function_exists( 'resta_admin_debug_page' ) ) {
 			</form>
 
 			<h2><?php echo esc_html__( 'Error Log', 'resta' ); ?></h2>
-			<textarea rows="20" cols="160" style="width: 100%; font-family: monospace;" readonly><?php echo esc_textarea( $log_contents ); ?></textarea>
+			<textarea rows="20" cols="160" style="width: 100%; font-family: monospace; background: #f5f5f5; padding: 10px;" readonly><?php echo esc_textarea( $log_contents ); ?></textarea>
 		</div>
 		<?php
 	}
@@ -278,8 +292,3 @@ if ( ! function_exists( 'resta_register_debug_menu' ) ) {
 	}
 }
 add_action( 'admin_menu', 'resta_register_debug_menu' );
-
-// Include product card component
-if ( ! function_exists( 'resta_product_card' ) ) {
-	require_once RESTA_DIR . '/inc/product-card.php';
-}

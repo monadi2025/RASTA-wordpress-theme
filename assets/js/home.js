@@ -1,5 +1,5 @@
 jQuery(function ($) {
-	// Main menu hover
+	// Main menu hover effects
 	$('.resta-menu > li').on('mouseenter', function () {
 		$(this).addClass('is-hovered');
 	}).on('mouseleave', function () {
@@ -10,7 +10,7 @@ jQuery(function ($) {
 	var sliderIndex = 0;
 	var slides = $('.resta-slider__item');
 
-	if (slides.length > 0) {
+	if (slides.length > 1) {
 		function showSlide(n) {
 			if (n >= slides.length) {
 				sliderIndex = 0;
@@ -22,33 +22,32 @@ jQuery(function ($) {
 			$('.resta-slider__wrapper').css('transform', 'translateX(' + offset + '%)');
 		}
 
-	$('.resta-slider__nav--next').on('click', function () {
-		++sliderIndex;
-		showSlide(sliderIndex);
-	});
+		$('.resta-slider__nav--next').on('click', function () {
+			sliderIndex++;
+			showSlide(sliderIndex);
+		});
 
-	$('.resta-slider__nav--prev').on('click', function () {
-		--sliderIndex;
-		showSlide(sliderIndex);
-	});
+		$('.resta-slider__nav--prev').on('click', function () {
+			sliderIndex--;
+			showSlide(sliderIndex);
+		});
 
-	// Auto-play slider
-	setInterval(function () {
-		++sliderIndex;
-		showSlide(sliderIndex);
-	}, 5000);
+		// Auto-play slider every 5 seconds
+		setInterval(function () {
+			sliderIndex++;
+			showSlide(sliderIndex);
+		}, 5000);
+	}
 
 	// Newsletter form
 	$('.resta-newsletter__form').on('submit', function (e) {
 		e.preventDefault();
-		var $form = $(this);
-		var email = $form.find('input[type="email"]').val();
+		var email = $(this).find('input[type="email"]').val();
 
 		if (email) {
-			// Send email to server or external service
-			console.log('Newsletter signup:', email);
-			alert(<?php echo wp_json_encode( __( 'Thank you for subscribing!', 'resta' ) ); ?>);
-			$form.reset();
+			alert('از عضویت شما سپاسگزاریم!');
+			$(this).reset();
+			$(this).find('input[type="email"]').val('');
 		}
 	});
 });

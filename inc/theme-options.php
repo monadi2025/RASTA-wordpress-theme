@@ -1,6 +1,6 @@
 <?php
 /**
- * Theme options for Resta using Codestar Framework.
+ * Theme options for Resta using embedded Codestar Framework
  *
  * @package Resta
  */
@@ -15,22 +15,25 @@ if ( ! class_exists( 'CSF' ) ) {
 
 $prefix = 'resta_options';
 
+// Create main options panel
 CSF::createOptions(
 	$prefix,
 	array(
 		'framework_title' => __( 'Resta Theme Options', 'resta' ),
-		'menu_title'      => __( 'Resta', 'resta' ),
+		'menu_title'      => __( 'Resta Settings', 'resta' ),
 		'menu_slug'       => 'resta-theme-options',
 		'menu_position'   => 59,
 		'icon_url'        => 'dashicons-admin-generic',
 	)
 );
 
+// General Settings Section
 CSF::createSection(
 	$prefix,
 	array(
 		'id'     => 'general',
 		'title'  => __( 'General Settings', 'resta' ),
+		'icon'   => 'fas fa-cog',
 		'fields' => array(
 			array(
 				'id'    => 'logo_url',
@@ -46,14 +49,15 @@ CSF::createSection(
 			array(
 				'id'      => 'secondary_color',
 				'type'    => 'color',
-				'title'   => __( 'Secondary Color', 'resta' ),
+				'title'   => __( 'Secondary Color (Accent)', 'resta' ),
 				'default' => '#d9b46a',
 			),
 			array(
 				'id'      => 'font_family',
 				'type'    => 'text',
 				'title'   => __( 'Font Family', 'resta' ),
-				'default' => 'Vazirmatn',
+				'default' => 'Vazirmatn, sans-serif',
+				'help'    => __( 'Set the main font for the theme', 'resta' ),
 			),
 			array(
 				'id'      => 'header_phone',
@@ -71,11 +75,13 @@ CSF::createSection(
 	)
 );
 
+// Homepage Settings Section
 CSF::createSection(
 	$prefix,
 	array(
 		'id'     => 'homepage',
 		'title'  => __( 'Homepage', 'resta' ),
+		'icon'   => 'fas fa-home',
 		'fields' => array(
 			array(
 				'id'     => 'home_slider',
@@ -90,36 +96,40 @@ CSF::createSection(
 					array(
 						'id'    => 'image',
 						'type'  => 'upload',
-						'title' => __( 'Slide Image', 'resta' ),
+						'title' => __( 'Slide Image (1600x700px)', 'resta' ),
 					),
 					array(
 						'id'    => 'link',
 						'type'  => 'text',
-						'title' => __( 'Slide Link', 'resta' ),
+						'title' => __( 'Slide Button Link', 'resta' ),
+						'help'  => __( 'Full URL to the page or product', 'resta' ),
 					),
 				),
+				'button_title' => __( 'Add Slide', 'resta' ),
 			),
 			array(
 				'id'      => 'newsletter_title',
 				'type'    => 'text',
-				'title'   => __( 'Newsletter Title', 'resta' ),
+				'title'   => __( 'Newsletter Section Title', 'resta' ),
 				'default' => 'خبرنامه رستا',
 			),
 			array(
 				'id'      => 'newsletter_text',
 				'type'    => 'textarea',
-				'title'   => __( 'Newsletter Description', 'resta' ),
+				'title'   => __( 'Newsletter Section Description', 'resta' ),
 				'default' => 'برای دریافت پیشنهادهای ویژه، ثبت‌نام کنید.',
 			),
 		),
 	)
 );
 
+// Shop Settings Section
 CSF::createSection(
 	$prefix,
 	array(
 		'id'     => 'shop',
 		'title'  => __( 'Shop Settings', 'resta' ),
+		'icon'   => 'fas fa-shopping-cart',
 		'fields' => array(
 			array(
 				'id'      => 'woocommerce_columns',
@@ -137,7 +147,7 @@ CSF::createSection(
 				'id'      => 'catalog_products_per_page',
 				'type'    => 'number',
 				'title'   => __( 'Products Per Page', 'resta' ),
-				'default' => 12,
+				'default' => '12',
 			),
 		),
 	)
